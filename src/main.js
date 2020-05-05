@@ -8,8 +8,8 @@ import './assets/css/global.css'
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
-// axios.defaults.baseURL = 'http://127.0.0.1:8888'
-axios.defaults.baseURL = 'http://106.14.209.11:8888'
+axios.defaults.baseURL = 'http://127.0.0.1:8888'
+// axios.defaults.baseURL = 'http://106.14.209.11:8888'
 axios.interceptors.request.use(config => {
   config.headers.Authorization = window.localStorage.getItem('token')
   return config

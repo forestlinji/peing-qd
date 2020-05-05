@@ -18,7 +18,12 @@
           :key="'http://106.14.209.11:8888/user/avatar/'+this.userId"
         ></el-avatar>
         <span style="margin-right:20px">{{currentUser.username}}</span>
-        <el-link type="primary" @click="logout">退出</el-link>
+        <el-badge :value="messageNum" class="message" :hidden="!messageNum">
+          <el-link type="primary" class="message" @click="toMessagePage">消息</el-link>
+        </el-badge>
+        <el-badge :value="0" class="message" hidden>
+          <el-link type="primary" @click="logout" class="logout">退出</el-link>
+        </el-badge>
       </div>
     </el-header>
     <el-container>
@@ -114,17 +119,26 @@
                 <span>查看举报列表</span>
               </template>
             </el-menu-item>
-            <!-- <el-menu-item index="/deleteBan" @click="saveNavState('/deleteBan')" v-if="role_admin">
+          </el-submenu>
+          <el-submenu index="5" v-if="role_admin">
+            <template slot="title">
+              <span>消息系统</span>
+            </template>
+            <el-menu-item
+              index="/publish"
+              @click="saveNavState('/publish')"
+              v-if="hasRole('ROLE_ADMIN')"
+            >
               <template slot="title">
                 <i class="el-icon-menu"></i>
-                <span>解除封禁</span>
+                <span>发布公告</span>
               </template>
-            </el-menu-item>-->
+            </el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>
       <el-main>
-        <router-view></router-view>
+        <router-view @changeMessageState="changeMessageState"></router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -145,7 +159,8 @@ export default {
       role_user: false,
       role_admin: false,
       role_root: false,
-      currentUser: {}
+      currentUser: {},
+      messageNum: 0
     };
   },
   created() {
@@ -176,7 +191,15 @@ export default {
             this.role_user = true;
         }
         this.currentUser = res.data;
+        this.getUnreadMessage();
       }
+    },
+    async getUnreadMessage() {
+      const { data: res } = await this.$http.get("/message/getNum");
+      if (res.status !== 200) {
+        return this.$message.error("获取未读消息数量失败");
+      }
+      this.messageNum = res.data;
     },
     saveNavState(activePath) {
       window.sessionStorage.setItem("activePath", activePath);
@@ -206,6 +229,12 @@ export default {
     },
     toSignupPage() {
       this.$router.push("/signup");
+    },
+    toMessagePage() {
+      this.$router.push("/message");
+    },
+    changeMessageState() {
+      this.getUnreadMessage();
     }
   }
 };
@@ -260,5 +289,11 @@ export default {
 }
 .el-link {
   margin-right: 20px;
+}
+.message {
+  margin-right: 0px;
+}
+.logout {
+  margin-left: 20px;
 }
 </style>

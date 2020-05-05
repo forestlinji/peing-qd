@@ -13,6 +13,9 @@ import QuestionBox from '../components/user/QuestionBox.vue'
 import AllUser from '../components/userAdmin/AllUser.vue'
 import Admin from '../components/userAdmin/Admin.vue'
 import Report from '../components/report/Report.vue'
+import Publish from '../components/message/Publish.vue'
+import Message from '../components/message/Message.vue'
+
 Vue.use(VueRouter)
 
   const routes = [
@@ -32,6 +35,8 @@ Vue.use(VueRouter)
       {path:'/allUser',component: AllUser},
       {path:'/deleteAdmin',component: Admin},
       {path:'/reportList',component: Report},
+      {path:'/publish',component: Publish},
+      {path:'/message',component: Message},
     ]
   },
   {
